@@ -1,108 +1,182 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { openai } from '@/lib/openai';
 import { NextResponse } from 'next/server';
 
-const SAMPLE_JOBS = [
-    {
-        title: 'Product Manager Intern',
-        company_name: 'TechCorp',
-        location_type: 'Hybrid',
-        salary_min: 30,
-        salary_max: 45,
-        description: 'We are looking for a Product Manager Intern to help us build the future of our platform. You will work closely with engineering and design teams.',
-        requirements: ['Strong communication skills', 'Interest in product management', 'Currently enrolled in a degree program'],
-    },
-    {
-        title: 'Software Engineer',
-        company_name: 'StartUp Inc',
-        location_type: 'Remote',
-        salary_min: 100000,
-        salary_max: 130000,
-        description: 'Join our fast-paced team as a Software Engineer. You will be working on our core product using React and Node.js.',
-        requirements: ['Experience with React', 'Knowledge of Node.js', 'Problem-solving skills'],
-    },
-    {
-        title: 'Marketing Specialist',
-        company_name: 'GrowthCo',
-        location_type: 'Onsite',
-        salary_min: 60000,
-        salary_max: 80000,
-        description: 'We need a Marketing Specialist to drive our growth campaigns. You will be responsible for social media and email marketing.',
-        requirements: ['Marketing degree', 'Social media experience', 'Creative thinking'],
-    }
+export const maxDuration = 300; // 5 minutes timeout for long running seeding
+
+const JOB_TITLES = [
+    'Product Manager', 'Senior Product Manager', 'Group Product Manager', 'Director of Product',
+    'Associate Product Manager', 'Product Marketing Manager', 'Senior PMM', 'Head of Product Marketing',
+    'Technical Product Manager', 'Growth Product Manager', 'Product Operations Manager', 'VP of Product'
 ];
 
-export async function GET(request: Request) {
+const COMPANIES = [
+    'TechCorp', 'InnovateInc', 'FutureSystems', 'DataFlow', 'CloudScale', 'AI Dynamics',
+    'GreenEnergy', 'HealthPlus', 'FinTech Solutions', 'EduTech Global', 'MediaStream', 'LogiChain'
+];
+
+const LOCATIONS = ['San Francisco, CA', 'New York, NY', 'Boston, MA', 'Austin, TX', 'Seattle, WA', 'Remote', 'Chicago, IL', 'Los Angeles, CA'];
+const LOCATION_TYPES = ['Onsite', 'Hybrid', 'Virtual'];
+
+const EVENT_TITLES = [
+    'Product Management Summit', 'Tech Leaders Networking', 'Women in Product Mixer',
+    'AI in Product Management', 'Product Marketing Workshop', 'Career Fair 2025',
+    'Startup Pitch Night', 'Agile Product Development Seminar', 'Data-Driven Product Decisions',
+    'Executive Leadership Forum'
+];
+
+const EVENT_TYPES = ['Networking Event', 'Employer-Sponsored', 'Workshop'];
+
+function getRandomElement(arr: any[]) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateJob(postedBy: string) {
+    const title = getRandomElement(JOB_TITLES);
+    const company = getRandomElement(COMPANIES);
+    const locationType = getRandomElement(LOCATION_TYPES);
+
+    return {
+        title,
+        company_name: company,
+        location_type: locationType,
+        location_specifics: `We are looking for a talented ${title} to join our team at ${company}. You will be responsible for driving product strategy and execution.`, // Using this as description based on frontend usage
+        is_paid: Math.random() > 0.1,
+        // description field removed as it doesn't exist in schema
+        requirements: ['3+ years experience', 'Strong communication skills', 'Data analysis proficiency', 'Agile methodology'],
+        salary_min: 80000 + Math.floor(Math.random() * 50000),
+        salary_max: 130000 + Math.floor(Math.random() * 100000),
+        posted_by: postedBy,
+        status: 'active',
+        date_posted: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+    };
+}
+
+function generateEvent() {
+    const title = getRandomElement(EVENT_TITLES);
+    const type = getRandomElement(EVENT_TYPES);
+    const date = new Date();
+    date.setDate(date.getDate() + Math.floor(Math.random() * 60)); // Random date in next 60 days
+
+    return {
+        title,
+        event_type: type,
+        date: date.toISOString(),
+        description: `Join us for the ${title}. This is a great opportunity to learn and network with industry professionals.`,
+        location_type: getRandomElement(['Onsite', 'Virtual', 'Both']),
+        location_specifics: getRandomElement(LOCATIONS),
+        industry: 'Product Management', // Focusing on PM as requested
+    };
+}
+
+async function generateEmbeddings(texts: string[]) {
+    const response = await openai.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: texts,
+    });
+    return response.data.map(item => item.embedding);
+}
+
+export async function POST(request: Request) {
     try {
-        // Use service role key if available to bypass RLS
-        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-        let supabase;
-        let userId: string | undefined;
+        // Use Service Role Key to bypass RLS
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
 
-        if (serviceRoleKey) {
-            const { createClient } = await import('@supabase/supabase-js');
-            supabase = createClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                serviceRoleKey,
-                {
-                    auth: {
-                        autoRefreshToken: false,
-                        persistSession: false
-                    }
-                }
-            );
-            // When using service role, we might not have a user context, so we'll use a fallback ID
-            userId = '00000000-0000-0000-0000-000000000000';
-        } else {
-            // Fallback to authenticated user
-            const { createClient } = await import('@/lib/supabase/server');
-            supabase = await createClient();
+        // 1. Get or Create a Dummy Alumni User
+        // Since we are admin, we can just pick an alumni.
+        const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('role', 'alumni')
+            .limit(1);
 
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                return NextResponse.json({ error: 'You must be logged in (or provide SUPABASE_SERVICE_ROLE_KEY) to seed data' }, { status: 401 });
-            }
-            userId = user.id;
-        }
+        let posterId = profiles?.[0]?.id;
 
-        const results = [];
-
-        for (const job of SAMPLE_JOBS) {
-            // Generate embedding
-            const embeddingResponse = await openai.embeddings.create({
-                model: 'text-embedding-3-small',
-                input: `${job.title} ${job.company_name} ${job.description} ${job.requirements.join(' ')}`,
-            });
-
-            const embedding = embeddingResponse.data[0].embedding;
-
-            // Need to cast to any because generated types might expect string but we want to be sure
-            // The error specifically said number[] is not assignable to string, so we stringify.
-            const { data, error } = await supabase.from('jobs').insert({
-                title: job.title,
-                company_name: job.company_name,
-                location_type: job.location_type,
-                salary_min: job.salary_min,
-                salary_max: job.salary_max,
-                requirements: job.requirements,
-                embedding: JSON.stringify(embedding) as any,
-                posted_by: userId,
-                status: 'active',
-                link: 'https://example.com',
-                babson_connection: 'Alumni founded',
-            }).select();
-
-            if (error) {
-                console.error('Error inserting job:', error);
-                results.push({ job: job.title, status: 'failed', error: error.message });
+        if (!posterId) {
+            // If no alumni exists, try to find ANY user to attribute to, or create one?
+            // For now, let's just fail if no alumni.
+            // Actually, let's check if we can find any user.
+            const { data: users } = await supabase.auth.admin.listUsers({ perPage: 1 });
+            if (users.users.length > 0) {
+                posterId = users.users[0].id;
+                console.log('No alumni found, using first available user as poster:', posterId);
             } else {
-                results.push({ job: job.title, status: 'success' });
+                return NextResponse.json({ error: 'No users found to attribute jobs to.' }, { status: 400 });
             }
         }
 
-        return NextResponse.json({ results });
+        // 2. Generate Jobs
+        const jobs = [];
+        const jobTexts = [];
+        const extraRequirements = ['User Research', 'SQL', 'Python', 'Go-to-Market Strategy', 'Roadmapping', 'Stakeholder Management'];
+
+        for (let i = 0; i < 100; i++) {
+            const job = generateJob(posterId);
+
+            // Randomly add some extra requirements
+            const randomReqs = [...job.requirements];
+            if (Math.random() > 0.5) randomReqs.push(getRandomElement(extraRequirements));
+            if (Math.random() > 0.5) randomReqs.push(getRandomElement(extraRequirements));
+            job.requirements = randomReqs;
+
+            jobs.push(job);
+            // Use location_specifics as description for embedding
+            // ADDED: location_type to embedding text
+            jobTexts.push(`${job.title} ${job.company_name} ${job.location_type} ${job.location_specifics} ${job.requirements.join(' ')}`);
+        }
+
+        console.log('Generating job embeddings...');
+        // Batch embedding generation (OpenAI allows up to 2048 inputs, but let's do batches of 50 to be safe)
+        const jobEmbeddings: number[][] = [];
+        for (let i = 0; i < jobTexts.length; i += 50) {
+            const batch = jobTexts.slice(i, i + 50);
+            const embeddings = await generateEmbeddings(batch);
+            jobEmbeddings.push(...embeddings);
+        }
+
+        const jobsWithEmbeddings = jobs.map((job, index) => ({
+            ...job,
+            embedding: JSON.stringify(jobEmbeddings[index]) // Stringify for pgvector if needed, or cast to any
+        }));
+
+        console.log('Inserting jobs...');
+        const { error: jobsInsertError } = await supabase.from('jobs').insert(jobsWithEmbeddings as any); // Cast to any to avoid type strictness on vector
+        if (jobsInsertError) throw jobsInsertError;
+
+
+        // 3. Generate Events
+        const events = [];
+        const eventTexts = [];
+        for (let i = 0; i < 100; i++) {
+            const event = generateEvent();
+            events.push(event);
+            eventTexts.push(`${event.title} ${event.description} ${event.industry} ${event.event_type}`);
+        }
+
+        console.log('Generating event embeddings...');
+        const eventEmbeddings: number[][] = [];
+        for (let i = 0; i < eventTexts.length; i += 50) {
+            const batch = eventTexts.slice(i, i + 50);
+            const embeddings = await generateEmbeddings(batch);
+            eventEmbeddings.push(...embeddings);
+        }
+
+        const eventsWithEmbeddings = events.map((event, index) => ({
+            ...event,
+            embedding: JSON.stringify(eventEmbeddings[index])
+        }));
+
+        console.log('Inserting events...');
+        const { error: eventsInsertError } = await supabase.from('events').insert(eventsWithEmbeddings as any);
+        if (eventsInsertError) throw eventsInsertError;
+
+        return NextResponse.json({ message: 'Successfully seeded 100 jobs and 100 events.' });
+
     } catch (error: any) {
-        console.error('Seed error:', error);
+        console.error('Seeding error:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

@@ -44,17 +44,24 @@ export function JobForm() {
 
             let embedding = null;
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 second timeout
+
                 const embRes = await fetch('/api/generate-embedding', {
                     method: 'POST',
                     body: JSON.stringify({ text: descriptionForEmbedding }),
+                    signal: controller.signal
                 });
-                const embData = await embRes.json();
-                embedding = embData.embedding;
+
+                clearTimeout(timeoutId);
+
+                if (embRes.ok) {
+                    const embData = await embRes.json();
+                    embedding = embData.embedding;
+                }
             } catch (e) {
-                console.error("Embedding generation failed", e);
-                // Proceed without embedding? Or fail? 
-                // Semantic search won't work without it.
-                // I'll fail softly or retry.
+                console.warn("Embedding generation failed or timed out, proceeding without it.", e);
+                // Proceed without embedding
             }
 
             const { error } = await supabase.from('jobs').insert({

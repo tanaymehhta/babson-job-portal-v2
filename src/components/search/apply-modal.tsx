@@ -24,6 +24,7 @@ interface ApplyModalProps {
 export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps) {
     const [coverNote, setCoverNote] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const supabase = createClient();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -45,8 +46,15 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
 
             if (error) throw error;
 
-            toast.success('Application submitted successfully!');
-            onClose();
+            setIsSuccess(true);
+            setTimeout(() => {
+                onClose();
+                // Reset state after closing
+                setTimeout(() => {
+                    setIsSuccess(false);
+                    setCoverNote('');
+                }, 300);
+            }, 2000);
         } catch (error: any) {
             toast.error(error.message);
         } finally {
@@ -72,41 +80,59 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                         className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-50"
                     >
                         <div className="bg-white rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
-                            <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                                <div>
-                                    <h2 className="text-xl font-heading font-bold text-slate-900">Apply for {jobTitle}</h2>
-                                    <p className="text-sm text-slate-500">Share why you're a great fit</p>
-                                </div>
-                                <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-700">Cover Note</label>
-                                    <textarea
-                                        value={coverNote}
-                                        onChange={(e) => setCoverNote(e.target.value)}
-                                        className="w-full min-h-[150px] rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-babson-green-500/50 transition-all resize-none"
-                                        placeholder="I am interested in this role because..."
-                                        required
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-3 pt-2">
-                                    <Button type="button" variant="ghost" onClick={onClose}>
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        className="bg-babson-green-700 hover:bg-babson-green-800 text-white"
-                                        isLoading={loading}
+                            {isSuccess ? (
+                                <div className="p-12 flex flex-col items-center justify-center text-center space-y-4">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-2"
                                     >
-                                        Submit Application
-                                    </Button>
+                                        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </motion.div>
+                                    <h2 className="text-2xl font-heading font-bold text-slate-900">Application Sent!</h2>
+                                    <p className="text-slate-500">Good luck! The poster will be notified.</p>
                                 </div>
-                            </form>
+                            ) : (
+                                <>
+                                    <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                                        <div>
+                                            <h2 className="text-xl font-heading font-bold text-slate-900">Apply for {jobTitle}</h2>
+                                            <p className="text-sm text-slate-500">Share why you're a great fit</p>
+                                        </div>
+                                        <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                    </div>
+
+                                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700">Cover Note</label>
+                                            <textarea
+                                                value={coverNote}
+                                                onChange={(e) => setCoverNote(e.target.value)}
+                                                className="w-full min-h-[150px] rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-babson-green-500/50 transition-all resize-none"
+                                                placeholder="I am interested in this role because..."
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-2">
+                                            <Button type="button" variant="ghost" onClick={onClose}>
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                type="submit"
+                                                className="bg-babson-green-700 hover:bg-babson-green-800 text-white"
+                                                isLoading={loading}
+                                            >
+                                                Submit Application
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 </>

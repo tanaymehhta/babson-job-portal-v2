@@ -9,8 +9,6 @@ import { LogOut, User as UserIcon, Briefcase, LayoutDashboard } from 'lucide-rea
 export function Navbar() {
     const { user, role, signOut, loading } = useAuth();
 
-    if (loading) return null;
-
     return (
         <motion.nav
             initial={{ y: -100 }}

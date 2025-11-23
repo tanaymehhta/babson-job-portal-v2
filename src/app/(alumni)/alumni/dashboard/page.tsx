@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/components/auth/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,25 +11,34 @@ import { Plus, Users, Briefcase, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AlumniDashboard() {
+    const { user, loading: authLoading } = useAuth();
     const [jobs, setJobs] = useState<any[]>([]);
     const [stats, setStats] = useState({ activeJobs: 0, totalApplications: 0, views: 0 });
-    const [loading, setLoading] = useState(true);
+    const [dataLoading, setDataLoading] = useState(true);
     const supabase = createClient();
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
+            if (authLoading) return;
+
             if (!user) {
-                setLoading(false);
+                setDataLoading(false);
                 return;
             }
 
             // Fetch jobs posted by alumni
-            const { data: jobsData } = await supabase
+            console.log('Fetching jobs for user:', user.id);
+            const { data: jobsData, error } = await supabase
                 .from('jobs')
                 .select('*, applications(count)')
                 .eq('posted_by', user.id)
                 .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error fetching jobs:', error);
+            } else {
+                console.log('Jobs fetched:', jobsData?.length);
+            }
 
             if (jobsData) {
                 setJobs(jobsData);
@@ -40,13 +50,13 @@ export default function AlumniDashboard() {
                     views: 124, // Mock data for views since we don't track it yet
                 });
             }
-            setLoading(false);
+            setDataLoading(false);
         };
 
         fetchData();
-    }, [supabase]);
+    }, [user, authLoading, supabase]);
 
-    if (loading) {
+    if (authLoading || dataLoading) {
         return <div className="container mx-auto px-4 py-12"><Skeleton className="h-96 w-full" /></div>;
     }
 

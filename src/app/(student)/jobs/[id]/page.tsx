@@ -10,8 +10,11 @@ import { Building2, MapPin, DollarSign, Calendar, Globe, CheckCircle2, ArrowLeft
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+import { useAuth } from '@/components/auth/auth-provider';
+
 export default function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
+    const { user, role, loading: authLoading } = useAuth();
     const [job, setJob] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isApplyOpen, setIsApplyOpen] = useState(false);
@@ -19,6 +22,11 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
     const router = useRouter();
 
     useEffect(() => {
+        if (!authLoading && user && role === 'alumni') {
+            router.push('/alumni/dashboard');
+            return;
+        }
+
         const fetchJob = async () => {
             const { data, error } = await supabase
                 .from('jobs')

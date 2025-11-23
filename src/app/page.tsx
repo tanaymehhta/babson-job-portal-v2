@@ -1,98 +1,42 @@
 'use client';
 
-import { useState } from 'react';
-import { AnimatedSparkle } from '@/components/hero/animated-sparkle';
-import { SearchBar } from '@/components/search/search-bar';
-import { JobCard } from '@/components/search/job-card';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import { useAuth } from '@/components/auth/auth-provider';
+import { LandingContainer } from '@/components/landing/landing-container';
+import { AuthenticatedStudentHome } from '@/components/student/student-home';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export default function StudentHomePage() {
-  const [jobs, setJobs] = useState<any[]>([]);
-  const [events, setEvents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+export default function HomePage() {
+  const { user, role, loading } = useAuth();
+  const router = useRouter();
 
-  const handleSearch = async (query: string) => {
-    setLoading(true);
-    setHasSearched(true);
-    try {
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
-      });
-
-      const data = await response.json();
-
-      if (data.error) throw new Error(data.error);
-
-      setJobs(data.jobs || []);
-      setEvents(data.events || []);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!loading && user && role === 'alumni') {
+      router.push('/alumni/dashboard');
     }
-  };
+  }, [user, role, loading, router]);
 
-  return (
-    <div className="min-h-screen relative overflow-hidden">
-      <AnimatedSparkle />
+  if (loading) {
+    return null; // Or a loading spinner
+  }
 
-      <div className="container mx-auto px-4 pt-20 pb-12">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-6">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900"
-          >
-            Find your next <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-babson-green-600 to-emerald-500">
-              opportunity
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-slate-600"
-          >
-            Use natural language to search for jobs, internships, and events tailored for Babson students.
-          </motion.p>
+  // If authenticated student, show student home
+  if (user && role === 'student') {
+    return <AuthenticatedStudentHome />;
+  }
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <SearchBar onSearch={handleSearch} isLoading={loading} />
-          </motion.div>
+  // If authenticated alumni, we are redirecting (handled by useEffect), so show loading state
+  if (user && role === 'alumni') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="h-12 w-12 bg-babson-green-200 rounded-full mb-4"></div>
+          <div className="h-4 w-32 bg-slate-200 rounded"></div>
         </div>
-
-        {hasSearched && (
-          <div className="space-y-12">
-            <section>
-              <h2 className="font-heading text-2xl font-bold mb-6 flex items-center gap-2">
-                Job Matches
-                <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                  {jobs.length}
-                </span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {jobs.map((job, index) => (
-                  <JobCard key={job.id} job={job} index={index} />
-                ))}
-              </div>
-              {jobs.length === 0 && !loading && (
-                <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                  No jobs found matching your criteria. Try a broader search.
-                </div>
-              )}
-            </section>
-          </div>
-        )}
       </div>
-    </div>
-  );
+    );
+  }
+
+  // If unauthenticated, show landing container
+  return <LandingContainer />;
 }

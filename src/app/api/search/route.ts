@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
         const { data: jobs, error: jobsError } = await supabase.rpc('match_jobs', {
             query_embedding: JSON.stringify(embedding),
-            match_threshold: 0.5,
+            match_threshold: 0.3,
             match_count: 10,
         } as any);
 
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
         console.log('Calling match_events...');
         const { data: events, error: eventsError } = await supabase.rpc('match_events', {
             query_embedding: JSON.stringify(embedding),
-            match_threshold: 0.5,
+            match_threshold: 0.3,
             match_count: 5,
         } as any);
 
