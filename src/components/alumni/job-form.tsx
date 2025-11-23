@@ -38,7 +38,7 @@ export function JobForm() {
             // Actually, we should probably generate embedding on the server side or via an edge function.
             // For now, I'll create a simple API route to generate embedding for job description.
 
-            const descriptionForEmbedding = `${formData.title} ${formData.company_name} ${formData.location_specifics} ${formData.requirements}`;
+            const descriptionForEmbedding = `${formData.title} ${formData.company_name} ${formData.location_type} ${formData.location_specifics} ${formData.requirements}`;
 
 
 
@@ -130,6 +130,7 @@ export function JobForm() {
                                 <option value="Onsite">Onsite</option>
                                 <option value="Hybrid">Hybrid</option>
                                 <option value="Virtual">Virtual</option>
+                                <option value="On Campus">On Campus</option>
                             </select>
                         </div>
                         <div className="space-y-2">

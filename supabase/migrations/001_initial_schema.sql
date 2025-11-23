@@ -22,7 +22,7 @@ create table jobs (
   title text not null,
   date_posted date default current_date not null,
   company_name text not null,
-  location_type text check (location_type in ('Virtual', 'Hybrid', 'Onsite')),
+  location_type text check (location_type in ('Virtual', 'Hybrid', 'Onsite', 'On Campus')),
   location_specifics text,
   is_paid boolean default false,
   babson_connection text,

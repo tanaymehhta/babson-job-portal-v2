@@ -30,7 +30,7 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Describe your dream job... (e.g., 'Marketing internship in Boston with a startup')"
-                        className="h-14 pl-12 pr-32 rounded-2xl border-white/20 bg-white/90 backdrop-blur-xl shadow-xl text-lg placeholder:text-slate-400 focus-visible:ring-babson-green-500/50"
+                        className="h-14 pl-12 pr-36 rounded-2xl border-white/20 bg-white/90 backdrop-blur-xl shadow-xl text-lg placeholder:text-slate-400 focus-visible:ring-babson-green-500/50"
                     />
                     <Search className="absolute left-4 w-5 h-5 text-slate-400" />
                     <div className="absolute right-2">
