@@ -182,6 +182,74 @@ export interface Database {
                     }
                 ]
             }
+            job_applications: {
+                Row: {
+                    id: string
+                    user_id: string
+                    role: string
+                    company: string
+                    location: string
+                    pay: string | null
+                    status: Database['public']['Enums']['application_status']
+                    date_applied: string | null
+                    application_deadline: string | null
+                    next_steps: string | null
+                    link: string | null
+                    resume_version: string | null
+                    contact_person: string | null
+                    interview_stage: string | null
+                    comments: string | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    role: string
+                    company: string
+                    location: string
+                    pay?: string | null
+                    status: Database['public']['Enums']['application_status']
+                    date_applied?: string | null
+                    application_deadline?: string | null
+                    next_steps?: string | null
+                    link?: string | null
+                    resume_version?: string | null
+                    contact_person?: string | null
+                    interview_stage?: string | null
+                    comments?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    role?: string
+                    company?: string
+                    location?: string
+                    pay?: string | null
+                    status?: Database['public']['Enums']['application_status']
+                    date_applied?: string | null
+                    application_deadline?: string | null
+                    next_steps?: string | null
+                    link?: string | null
+                    resume_version?: string | null
+                    contact_person?: string | null
+                    interview_stage?: string | null
+                    comments?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "job_applications_user_id_fkey"
+                        columns: ["user_id"]
+                        isOneToOne: false
+                        referencedRelation: "users"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
             profiles: {
                 Row: {
                     bio: string | null
@@ -265,7 +333,7 @@ export interface Database {
             }
         }
         Enums: {
-            [_ in never]: never
+            application_status: 'saved' | 'preparing' | 'applied' | 'interview_round_1' | 'interview_round_2' | 'interview_round_3' | 'interview_final' | 'offer_received' | 'accepted' | 'rejected' | 'withdrawn'
         }
         CompositeTypes: {
             [_ in never]: never
