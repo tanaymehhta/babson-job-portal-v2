@@ -37,6 +37,8 @@ export function AuthenticatedStudentHome() {
 
         setLoading(true);
         setHasSearched(true);
+        setJobs([]); // Clear previous results immediately
+        setEvents([]);
         try {
             const response = await fetch('/api/search', {
                 method: 'POST',
@@ -91,7 +93,7 @@ export function AuthenticatedStudentHome() {
                     </motion.div>
                 </div>
 
-                {hasSearched && (
+                {(hasSearched || loading) && (
                     <div className="space-y-12">
                         <section>
                             <h2 className="font-heading text-2xl font-bold mb-6 flex items-center gap-2">
@@ -106,15 +108,26 @@ export function AuthenticatedStudentHome() {
                                     </span>
                                 )}
                             </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {jobs.map((job, index) => (
-                                    <JobCard key={job.id} job={job} index={index} />
-                                ))}
-                            </div>
-                            {jobs.length === 0 && !loading && (
-                                <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                                    No jobs found matching your criteria. Try a broader search.
+
+                            {loading ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="h-64 bg-slate-100 rounded-2xl animate-pulse border border-slate-200" />
+                                    ))}
                                 </div>
+                            ) : (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {jobs.map((job, index) => (
+                                            <JobCard key={job.id} job={job} index={index} />
+                                        ))}
+                                    </div>
+                                    {jobs.length === 0 && (
+                                        <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                            No jobs found matching your criteria. Try a broader search.
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </section>
                     </div>
