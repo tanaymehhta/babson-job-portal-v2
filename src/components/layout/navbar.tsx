@@ -34,12 +34,20 @@ export function Navbar() {
                                 </div>
                             )}
                             {role === 'student' && (
-                                <Link href="/profile">
-                                    <Button variant="ghost" size="sm" className="gap-2">
-                                        <UserIcon className="w-4 h-4" />
-                                        Profile
-                                    </Button>
-                                </Link>
+                                <>
+                                    <Link href="/applications">
+                                        <Button variant="ghost" size="sm" className="gap-2">
+                                            <Briefcase className="w-4 h-4" />
+                                            Applications
+                                        </Button>
+                                    </Link>
+                                    <Link href="/profile">
+                                        <Button variant="ghost" size="sm" className="gap-2">
+                                            <UserIcon className="w-4 h-4" />
+                                            Profile
+                                        </Button>
+                                    </Link>
+                                </>
                             )}
                             {role === 'alumni' && (
                                 <>

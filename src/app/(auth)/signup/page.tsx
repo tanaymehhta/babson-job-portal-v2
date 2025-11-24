@@ -25,7 +25,7 @@ export default function SignupPage() {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -38,8 +38,16 @@ export default function SignupPage() {
 
             if (error) throw error;
 
-            toast.success('Account created! Please check your email to verify your account.');
-            router.push('/login');
+            toast.success('Account created successfully!');
+
+            // Redirect based on role
+            if (role === 'alumni') {
+                router.push('/alumni/dashboard');
+            } else {
+                router.push('/'); // Student home
+            }
+
+            router.refresh();
         } catch (error: any) {
             toast.error(error.message);
         } finally {
@@ -67,8 +75,8 @@ export default function SignupPage() {
                             <div
                                 onClick={() => setRole('student')}
                                 className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-2 ${role === 'student'
-                                        ? 'border-babson-green-500 bg-babson-green-50/50 text-babson-green-700'
-                                        : 'border-slate-100 hover:border-slate-200 text-slate-500'
+                                    ? 'border-babson-green-500 bg-babson-green-50/50 text-babson-green-700'
+                                    : 'border-slate-100 hover:border-slate-200 text-slate-500'
                                     }`}
                             >
                                 <GraduationCap className="w-6 h-6" />
@@ -77,8 +85,8 @@ export default function SignupPage() {
                             <div
                                 onClick={() => setRole('alumni')}
                                 className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-2 ${role === 'alumni'
-                                        ? 'border-babson-green-500 bg-babson-green-50/50 text-babson-green-700'
-                                        : 'border-slate-100 hover:border-slate-200 text-slate-500'
+                                    ? 'border-babson-green-500 bg-babson-green-50/50 text-babson-green-700'
+                                    : 'border-slate-100 hover:border-slate-200 text-slate-500'
                                     }`}
                             >
                                 <User className="w-6 h-6" />
