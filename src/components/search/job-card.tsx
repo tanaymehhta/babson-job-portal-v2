@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from 'lucide-react'; // Wait, Badge is a component usually, not an icon. I'll use a div for badge or import from lucide if it exists (it doesn't).
 // I'll make a simple Badge component inline or just use div classes.
-import { MapPin, Building2, DollarSign, ArrowRight } from 'lucide-react';
+import { MapPin, Building2, DollarSign, ArrowRight, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -16,6 +16,7 @@ interface Job {
     location_type?: string;
     salary_min?: number;
     salary_max?: number;
+    link?: string;
 }
 
 interface JobCardProps {
@@ -64,6 +65,18 @@ export function JobCard({ job, index }: JobCardProps) {
                                 {job.salary_min && job.salary_max ? ' - ' : ''}
                                 {job.salary_max ? `$${job.salary_max.toLocaleString()}` : ''}
                             </div>
+                        )}
+                        {job.link && (
+                            <a
+                                href={job.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <ExternalLink className="w-3 h-3 mr-1" />
+                                External Link
+                            </a>
                         )}
                     </div>
                 </CardContent>

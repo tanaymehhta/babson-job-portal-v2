@@ -54,7 +54,34 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
         );
     }
 
-    if (!job) return <div>Job not found</div>;
+    if (!job) {
+        return (
+            <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4">
+                <div className="text-center space-y-6 max-w-md">
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", duration: 0.5 }}
+                        className="text-6xl"
+                    >
+                        😞
+                    </motion.div>
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-heading font-bold text-slate-900">Job Not Found</h1>
+                        <p className="text-slate-600">
+                            This job posting may have been removed or doesn't exist anymore.
+                        </p>
+                    </div>
+                    <Link href="/">
+                        <Button className="bg-babson-green-700 hover:bg-babson-green-800 text-white shadow-lg">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back to Search
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20">
@@ -93,13 +120,27 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                             </div>
                         </div>
 
-                        <Button
-                            size="lg"
-                            className="bg-babson-green-700 hover:bg-babson-green-800 text-white shadow-xl shadow-green-700/20 px-8"
-                            onClick={() => setIsApplyOpen(true)}
-                        >
-                            Apply Now
-                        </Button>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            {job.link && (
+                                <a href={job.link} target="_blank" rel="noopener noreferrer">
+                                    <Button
+                                        size="lg"
+                                        variant="outline"
+                                        className="border-2 border-babson-green-700 text-babson-green-700 hover:bg-babson-green-50 px-6"
+                                    >
+                                        <Globe className="w-4 h-4 mr-2" />
+                                        Apply on Company Site
+                                    </Button>
+                                </a>
+                            )}
+                            <Button
+                                size="lg"
+                                className="bg-babson-green-700 hover:bg-babson-green-800 text-white shadow-xl shadow-green-700/20 px-8"
+                                onClick={() => setIsApplyOpen(true)}
+                            >
+                                Quick Apply
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -42,7 +42,13 @@ if (!job) {
 }
 ```
 
-**Status:** ⬜ Not Fixed
+**Status:** ✅ FIXED (2025-11-24)
+
+**Implemented Fix:**
+- Added styled error state with animated emoji
+- Clear error message explaining the issue
+- Back button to return to search
+- Full page layout with proper styling
 
 ---
 
@@ -112,7 +118,13 @@ onChange={(e) => {
 }}
 ```
 
-**Status:** ⬜ Not Fixed
+**Status:** ✅ FIXED (2025-11-24)
+
+**Implemented Fix:**
+- Added check for empty query in handleSearch
+- Resets hasSearched, jobs, and events when query is empty
+- Returns early to prevent API call
+- Search results disappear when user clears the input
 
 ---
 
@@ -149,7 +161,13 @@ onChange={(e) => {
 </h2>
 ```
 
-**Status:** ⬜ Not Fixed
+**Status:** ✅ FIXED (2025-11-24)
+
+**Implemented Fix:**
+- Added conditional rendering for loading state
+- Shows "Searching..." with pulse animation while loading
+- Shows job count when not loading
+- Smooth UX transition from loading to results
 
 ---
 
@@ -234,7 +252,20 @@ Move external link button next to "Apply Now":
 </div>
 ```
 
-**Status:** ⬜ Not Fixed
+**Status:** ✅ FIXED (2025-11-24)
+
+**Implemented Fixes:**
+1. **Job Card (search results):**
+   - Added `link` field to Job interface
+   - Added ExternalLink icon badge with blue styling
+   - Shows external link badge when link exists
+   - Click opens in new tab without navigating card
+
+2. **Job Detail Page:**
+   - Moved external link button next to "Apply Now"
+   - Prominent "Apply on Company Site" button with Globe icon
+   - Green outline styling to match brand
+   - Responsive layout for mobile
 
 ---
 

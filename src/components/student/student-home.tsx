@@ -27,6 +27,14 @@ export function AuthenticatedStudentHome() {
     const [hasSearched, setHasSearched] = useState(false);
 
     const handleSearch = async (query: string) => {
+        // Reset if empty query
+        if (!query.trim()) {
+            setHasSearched(false);
+            setJobs([]);
+            setEvents([]);
+            return;
+        }
+
         setLoading(true);
         setHasSearched(true);
         try {
@@ -88,9 +96,15 @@ export function AuthenticatedStudentHome() {
                         <section>
                             <h2 className="font-heading text-2xl font-bold mb-6 flex items-center gap-2">
                                 Job Matches
-                                <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                                    {jobs.length}
-                                </span>
+                                {loading ? (
+                                    <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full animate-pulse">
+                                        Searching...
+                                    </span>
+                                ) : (
+                                    <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                                        {jobs.length}
+                                    </span>
+                                )}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {jobs.map((job, index) => (
