@@ -30,7 +30,7 @@ export default function AlumniDashboard() {
             console.log('Fetching jobs for user:', user.id);
             const { data: jobsData, error } = await supabase
                 .from('jobs')
-                .select('*, applications(count)')
+                .select('id, title, company_name, date_posted, status, applications(count)')
                 .eq('posted_by', user.id)
                 .order('created_at', { ascending: false });
 

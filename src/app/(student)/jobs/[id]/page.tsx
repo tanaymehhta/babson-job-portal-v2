@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApplyModal } from '@/components/search/apply-modal';
 import { motion } from 'framer-motion';
-import { Building2, MapPin, DollarSign, Calendar, Globe, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Building2, MapPin, DollarSign, Calendar, Globe, CheckCircle2, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -132,6 +132,24 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                 </div>
 
                 <div className="space-y-6">
+                    {job.application_requirements && (
+                        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                            <h3 className="font-heading font-bold mb-4">Application Requirements</h3>
+                            <div className="space-y-3">
+                                {Object.entries(job.application_requirements).map(([key, value]) => (
+                                    <div key={key} className="flex items-center gap-3">
+                                        {value ? (
+                                            <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
+                                        ) : (
+                                            <XCircle className="w-5 h-5 text-red-500 shrink-0" />
+                                        )}
+                                        <span className="text-slate-600 capitalize">{key.replace('_', ' ')}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                         <h3 className="font-heading font-bold mb-4">Job Overview</h3>
                         <div className="space-y-4">

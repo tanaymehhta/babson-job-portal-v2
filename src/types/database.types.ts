@@ -107,6 +107,14 @@ export interface Database {
                     location_type: string | null
                     posted_by: string | null
                     requirements: string[] | null
+                    application_requirements: {
+                        resume: boolean
+                        cover_letter: boolean
+                        transcript: boolean
+                        portfolio: boolean
+                        references: boolean
+                        writing_sample: boolean
+                    } | null
                     salary_max: number | null
                     salary_min: number | null
                     status: string | null
@@ -125,6 +133,14 @@ export interface Database {
                     location_type?: string | null
                     posted_by?: string | null
                     requirements?: string[] | null
+                    application_requirements?: {
+                        resume: boolean
+                        cover_letter: boolean
+                        transcript: boolean
+                        portfolio: boolean
+                        references: boolean
+                        writing_sample: boolean
+                    } | null
                     salary_max?: number | null
                     salary_min?: number | null
                     status?: string | null
@@ -143,6 +159,14 @@ export interface Database {
                     location_type?: string | null
                     posted_by?: string | null
                     requirements?: string[] | null
+                    application_requirements?: {
+                        resume: boolean
+                        cover_letter: boolean
+                        transcript: boolean
+                        portfolio: boolean
+                        references: boolean
+                        writing_sample: boolean
+                    } | null
                     salary_max?: number | null
                     salary_min?: number | null
                     status?: string | null

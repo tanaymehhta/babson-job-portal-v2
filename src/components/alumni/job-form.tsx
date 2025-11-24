@@ -20,11 +20,29 @@ export function JobForm() {
         location_type: 'Onsite',
         location_specifics: '',
         requirements: '', // Will split by newline
+        application_requirements: {
+            resume: true,
+            cover_letter: false,
+            transcript: false,
+            portfolio: false,
+            references: false,
+            writing_sample: false
+        },
         salary_min: '',
         salary_max: '',
         babson_connection: '',
         link: '',
     });
+
+    const handleRequirementChange = (key: keyof typeof formData.application_requirements) => {
+        setFormData(prev => ({
+            ...prev,
+            application_requirements: {
+                ...prev.application_requirements,
+                [key]: !prev.application_requirements[key]
+            }
+        }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -70,6 +88,7 @@ export function JobForm() {
                 location_type: formData.location_type,
                 location_specifics: formData.location_specifics,
                 requirements: formData.requirements.split('\n').filter(line => line.trim()),
+                application_requirements: formData.application_requirements,
                 salary_min: formData.salary_min ? parseInt(formData.salary_min) : null,
                 salary_max: formData.salary_max ? parseInt(formData.salary_max) : null,
                 babson_connection: formData.babson_connection,
@@ -151,6 +170,23 @@ export function JobForm() {
                             onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                             placeholder="- 3+ years of experience&#10;- React knowledge&#10;- Strong communication skills"
                         />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Application Requirements</label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border rounded-xl bg-slate-50">
+                            {Object.entries(formData.application_requirements).map(([key, value]) => (
+                                <label key={key} className="flex items-center space-x-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={value}
+                                        onChange={() => handleRequirementChange(key as keyof typeof formData.application_requirements)}
+                                        className="w-4 h-4 text-babson-green-600 rounded border-gray-300 focus:ring-babson-green-500"
+                                    />
+                                    <span className="text-sm capitalize">{key.replace('_', ' ')}</span>
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 </CardContent>
             </Card>
