@@ -22,7 +22,7 @@ export async function POST(request: Request) {
             const supabase = await createClient();
             const { error: updateError } = await supabase
                 .from('jobs')
-                .update({ embedding })
+                .update({ embedding: JSON.stringify(embedding) })
                 .eq('id', jobId);
 
             if (updateError) {
