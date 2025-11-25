@@ -68,7 +68,7 @@ export function AuthenticatedStudentHome() {
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900"
+                        className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
                     >
                         Find your next <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-babson-green-600 to-emerald-500">
@@ -79,7 +79,7 @@ export function AuthenticatedStudentHome() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-xl text-slate-600"
+                        className="text-xl text-slate-600 dark:text-slate-400"
                     >
                         Use natural language to search for jobs, internships, and events tailored for Babson students.
                     </motion.p>
@@ -99,11 +99,11 @@ export function AuthenticatedStudentHome() {
                             <h2 className="font-heading text-2xl font-bold mb-6 flex items-center gap-2">
                                 Job Matches
                                 {loading ? (
-                                    <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full animate-pulse">
+                                    <span className="text-sm font-normal text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full animate-pulse">
                                         Searching...
                                     </span>
                                 ) : (
-                                    <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                                    <span className="text-sm font-normal text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
                                         {jobs.length}
                                     </span>
                                 )}
@@ -112,7 +112,7 @@ export function AuthenticatedStudentHome() {
                             {loading ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {[1, 2, 3].map((i) => (
-                                        <div key={i} className="h-64 bg-slate-100 rounded-2xl animate-pulse border border-slate-200" />
+                                        <div key={i} className="h-64 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse border border-slate-200 dark:border-slate-700" />
                                     ))}
                                 </div>
                             ) : (
@@ -123,7 +123,7 @@ export function AuthenticatedStudentHome() {
                                         ))}
                                     </div>
                                     {jobs.length === 0 && (
-                                        <div className="text-center py-12 text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                        <div className="text-center py-12 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
                                             No jobs found matching your criteria. Try a broader search.
                                         </div>
                                     )}

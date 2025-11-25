@@ -61,7 +61,7 @@ export default function SignupPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <Card className="glass border-white/40 shadow-2xl shadow-babson-green-900/5">
+            <Card className="bg-white/90 dark:bg-slate-800 backdrop-blur-xl border-white/40 dark:border-slate-700/50 shadow-2xl shadow-babson-green-900/5 dark:shadow-slate-950/50">
                 <CardHeader className="text-center space-y-2">
                     <div className="mx-auto w-12 h-12 bg-gradient-to-br from-babson-green-600 to-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-green-500/20 mb-4">
                         <User className="w-6 h-6" />
@@ -75,8 +75,8 @@ export default function SignupPage() {
                             <div
                                 onClick={() => setRole('student')}
                                 className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-2 ${role === 'student'
-                                    ? 'border-babson-green-500 bg-babson-green-50/50 text-babson-green-700'
-                                    : 'border-slate-100 hover:border-slate-200 text-slate-500'
+                                    ? 'border-babson-green-500 bg-babson-green-50/50 dark:bg-babson-green-900/30 text-babson-green-700 dark:text-babson-green-400'
+                                    : 'border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600 text-slate-500 dark:text-slate-400'
                                     }`}
                             >
                                 <GraduationCap className="w-6 h-6" />
@@ -85,8 +85,8 @@ export default function SignupPage() {
                             <div
                                 onClick={() => setRole('alumni')}
                                 className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-2 ${role === 'alumni'
-                                    ? 'border-babson-green-500 bg-babson-green-50/50 text-babson-green-700'
-                                    : 'border-slate-100 hover:border-slate-200 text-slate-500'
+                                    ? 'border-babson-green-500 bg-babson-green-50/50 dark:bg-babson-green-900/30 text-babson-green-700 dark:text-babson-green-400'
+                                    : 'border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600 text-slate-500 dark:text-slate-400'
                                     }`}
                             >
                                 <User className="w-6 h-6" />
@@ -132,9 +132,9 @@ export default function SignupPage() {
                     </form>
                 </CardContent>
                 <CardFooter className="justify-center">
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         Already have an account?{' '}
-                        <Link href="/login" className="text-babson-green-700 hover:underline font-medium">
+                        <Link href="/login" className="text-babson-green-700 dark:text-emerald-400 hover:underline font-medium">
                             Log in
                         </Link>
                     </p>

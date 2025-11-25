@@ -33,18 +33,18 @@ export function JobCard({ job, index }: JobCardProps) {
             whileHover={{ scale: 1.02 }}
             className="h-full"
         >
-            <Card className="h-full flex flex-col hover:shadow-2xl hover:shadow-babson-green-900/10 transition-all duration-300 border-white/60 bg-white/80">
+            <Card className="h-full flex flex-col hover:shadow-2xl hover:shadow-babson-green-900/10 dark:hover:shadow-babson-green-500/5 transition-all duration-300 border-white/60 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80">
                 <CardHeader>
                     <div className="flex justify-between items-start gap-4">
                         <div>
-                            <CardTitle className="text-xl mb-1 text-babson-green-900">{job.title}</CardTitle>
-                            <div className="flex items-center text-slate-500 text-sm">
+                            <CardTitle className="text-xl mb-1 text-babson-green-900 dark:text-babson-green-400">{job.title}</CardTitle>
+                            <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm">
                                 <Building2 className="w-4 h-4 mr-1" />
                                 {job.company_name}
                             </div>
                         </div>
                         {job.similarity && (
-                            <div className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full">
+                            <div className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-2 py-1 rounded-full">
                                 {Math.round(job.similarity * 100)}% Match
                             </div>
                         )}
@@ -53,13 +53,13 @@ export function JobCard({ job, index }: JobCardProps) {
                 <CardContent className="flex-1 space-y-4">
                     <div className="flex flex-wrap gap-2">
                         {job.location_type && (
-                            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
                                 <MapPin className="w-3 h-3 mr-1" />
                                 {job.location_type}
                             </div>
                         )}
                         {(job.salary_min || job.salary_max) && (
-                            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
                                 <DollarSign className="w-3 h-3 mr-1" />
                                 {job.salary_min ? `$${job.salary_min.toLocaleString()}` : ''}
                                 {job.salary_min && job.salary_max ? ' - ' : ''}
@@ -71,7 +71,7 @@ export function JobCard({ job, index }: JobCardProps) {
                                 href={job.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <ExternalLink className="w-3 h-3 mr-1" />
@@ -82,7 +82,7 @@ export function JobCard({ job, index }: JobCardProps) {
                 </CardContent>
                 <CardFooter>
                     <Link href={`/jobs/${job.id}`} className="w-full">
-                        <Button className="w-full bg-white border-2 border-babson-green-100 hover:border-babson-green-500 text-babson-green-700 hover:bg-babson-green-50 group">
+                        <Button className="w-full bg-white dark:bg-slate-900 border-2 border-babson-green-100 dark:border-babson-green-800 hover:border-babson-green-500 dark:hover:border-babson-green-600 text-babson-green-700 dark:text-babson-green-400 hover:bg-babson-green-50 dark:hover:bg-babson-green-950 group">
                             View Details
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Button>

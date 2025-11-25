@@ -16,7 +16,7 @@ const COMPANIES = [
 ];
 
 const LOCATIONS = ['San Francisco, CA', 'New York, NY', 'Boston, MA', 'Austin, TX', 'Seattle, WA', 'Remote', 'Chicago, IL', 'Los Angeles, CA'];
-const LOCATION_TYPES = ['Onsite', 'Hybrid', 'Virtual'];
+const LOCATION_TYPES = ['Onsite', 'Hybrid', 'Virtual', 'On Campus'];
 
 const EVENT_TITLES = [
     'Product Management Summit', 'Tech Leaders Networking', 'Women in Product Mixer',
@@ -85,28 +85,17 @@ export async function POST(request: Request) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // 1. Get or Create a Dummy Alumni User
-        // Since we are admin, we can just pick an alumni.
+        // 1. Get a valid User ID from PROFILES (must exist in profiles to satisfy FK)
         const { data: profiles } = await supabase
             .from('profiles')
             .select('id')
-            .eq('role', 'alumni')
             .limit(1);
 
-        let posterId = profiles?.[0]?.id;
-
-        if (!posterId) {
-            // If no alumni exists, try to find ANY user to attribute to, or create one?
-            // For now, let's just fail if no alumni.
-            // Actually, let's check if we can find any user.
-            const { data: users } = await supabase.auth.admin.listUsers({ perPage: 1 });
-            if (users.users.length > 0) {
-                posterId = users.users[0].id;
-                console.log('No alumni found, using first available user as poster:', posterId);
-            } else {
-                return NextResponse.json({ error: 'No users found to attribute jobs to.' }, { status: 400 });
-            }
+        if (!profiles || profiles.length === 0) {
+            return NextResponse.json({ error: 'No profiles found. Please create a user (signup) first before seeding.' }, { status: 400 });
         }
+
+        const posterId = profiles[0].id;
 
         // 2. Generate Jobs
         const jobs = [];

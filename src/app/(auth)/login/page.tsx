@@ -59,7 +59,7 @@ export default function LoginPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <Card className="glass border-white/40 shadow-2xl shadow-babson-green-900/5">
+            <Card className="bg-white/90 dark:bg-slate-800 backdrop-blur-xl border-white/40 dark:border-slate-700/50 shadow-2xl shadow-babson-green-900/5 dark:shadow-slate-950/50">
                 <CardHeader className="text-center space-y-2">
                     <div className="mx-auto w-12 h-12 bg-gradient-to-br from-babson-green-600 to-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-green-500/20 mb-4">
                         <LogIn className="w-6 h-6" />
@@ -98,9 +98,9 @@ export default function LoginPage() {
                     </form>
                 </CardContent>
                 <CardFooter className="justify-center">
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                         Don't have an account?{' '}
-                        <Link href="/signup" className="text-babson-green-700 hover:underline font-medium">
+                        <Link href="/signup" className="text-babson-green-700 dark:text-emerald-400 hover:underline font-medium">
                             Sign up
                         </Link>
                     </p>

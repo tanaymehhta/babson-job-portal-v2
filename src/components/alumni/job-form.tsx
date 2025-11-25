@@ -52,37 +52,8 @@ export function JobForm() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not authenticated');
 
-            // Generate embedding via API route (we need a new route for this or reuse search but that's for query)
-            // Actually, we should probably generate embedding on the server side or via an edge function.
-            // For now, I'll create a simple API route to generate embedding for job description.
-
-            const descriptionForEmbedding = `${formData.title} ${formData.company_name} ${formData.location_type} ${formData.location_specifics} ${formData.requirements}`;
-
-
-
-            let embedding = null;
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 second timeout
-
-                const embRes = await fetch('/api/generate-embedding', {
-                    method: 'POST',
-                    body: JSON.stringify({ text: descriptionForEmbedding }),
-                    signal: controller.signal
-                });
-
-                clearTimeout(timeoutId);
-
-                if (embRes.ok) {
-                    const embData = await embRes.json();
-                    embedding = embData.embedding;
-                }
-            } catch (e) {
-                console.warn("Embedding generation failed or timed out, proceeding without it.", e);
-                // Proceed without embedding
-            }
-
-            const { error } = await supabase.from('jobs').insert({
+            // Insert job immediately without waiting for embedding
+            const { data: insertedJob, error } = await supabase.from('jobs').insert({
                 title: formData.title,
                 company_name: formData.company_name,
                 location_type: formData.location_type,
@@ -94,11 +65,29 @@ export function JobForm() {
                 babson_connection: formData.babson_connection,
                 link: formData.link,
                 posted_by: user.id,
-                embedding: embedding,
+                embedding: null, // Will be generated in background
                 status: 'active'
-            });
+            }).select('id, title, company_name, location_type, location_specifics, requirements');
 
             if (error) throw error;
+
+            // Generate embedding in the background (fire-and-forget)
+            if (insertedJob && insertedJob[0]?.id) {
+                const jobId = insertedJob[0].id;
+                const descriptionForEmbedding = `${formData.title} ${formData.company_name} ${formData.location_type} ${formData.location_specifics} ${formData.requirements}`;
+
+                // Fire-and-forget: generate embedding asynchronously
+                fetch('/api/generate-embedding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: descriptionForEmbedding,
+                        jobId: jobId
+                    })
+                }).catch(err => {
+                    console.warn('Background embedding generation failed:', err);
+                });
+            }
 
             toast.success('Job posted successfully!');
             router.push('/alumni/dashboard');
@@ -119,7 +108,7 @@ export function JobForm() {
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Job Title</label>
+                            <label className="text-sm font-medium dark:text-slate-300">Job Title</label>
                             <Input
                                 required
                                 value={formData.title}
@@ -128,7 +117,7 @@ export function JobForm() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Company Name</label>
+                            <label className="text-sm font-medium dark:text-slate-300">Company Name</label>
                             <Input
                                 required
                                 value={formData.company_name}
@@ -140,9 +129,9 @@ export function JobForm() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Location Type</label>
+                            <label className="text-sm font-medium dark:text-slate-300">Location Type</label>
                             <select
-                                className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-babson-green-500"
+                                className="flex h-11 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-babson-green-500"
                                 value={formData.location_type}
                                 onChange={(e) => setFormData({ ...formData, location_type: e.target.value })}
                             >
@@ -153,7 +142,7 @@ export function JobForm() {
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Location Specifics</label>
+                            <label className="text-sm font-medium dark:text-slate-300">Location Specifics</label>
                             <Input
                                 value={formData.location_specifics}
                                 onChange={(e) => setFormData({ ...formData, location_specifics: e.target.value })}
@@ -163,9 +152,9 @@ export function JobForm() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Requirements (one per line)</label>
+                        <label className="text-sm font-medium dark:text-slate-300">Requirements (one per line)</label>
                         <textarea
-                            className="w-full min-h-[150px] rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                            className="w-full min-h-[150px] rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-400 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-babson-green-500"
                             value={formData.requirements}
                             onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                             placeholder="- 3+ years of experience&#10;- React knowledge&#10;- Strong communication skills"
@@ -173,8 +162,8 @@ export function JobForm() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Application Requirements</label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border rounded-xl bg-slate-50">
+                        <label className="text-sm font-medium dark:text-slate-300">Application Requirements</label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-950/30">
                             {Object.entries(formData.application_requirements).map(([key, value]) => (
                                 <label key={key} className="flex items-center space-x-2 cursor-pointer">
                                     <input
@@ -183,7 +172,7 @@ export function JobForm() {
                                         onChange={() => handleRequirementChange(key as keyof typeof formData.application_requirements)}
                                         className="w-4 h-4 text-babson-green-600 rounded border-gray-300 focus:ring-babson-green-500"
                                     />
-                                    <span className="text-sm capitalize">{key.replace('_', ' ')}</span>
+                                    <span className="text-sm capitalize dark:text-slate-300">{key.replace('_', ' ')}</span>
                                 </label>
                             ))}
                         </div>
@@ -198,7 +187,7 @@ export function JobForm() {
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Min Salary ($)</label>
+                            <label className="text-sm font-medium dark:text-slate-300">Min Salary ($)</label>
                             <Input
                                 type="number"
                                 value={formData.salary_min}
@@ -206,7 +195,7 @@ export function JobForm() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Max Salary ($)</label>
+                            <label className="text-sm font-medium dark:text-slate-300">Max Salary ($)</label>
                             <Input
                                 type="number"
                                 value={formData.salary_max}
@@ -216,7 +205,7 @@ export function JobForm() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Babson Connection (Optional)</label>
+                        <label className="text-sm font-medium dark:text-slate-300">Babson Connection (Optional)</label>
                         <Input
                             value={formData.babson_connection}
                             onChange={(e) => setFormData({ ...formData, babson_connection: e.target.value })}
@@ -225,7 +214,7 @@ export function JobForm() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Application Link (Optional)</label>
+                        <label className="text-sm font-medium dark:text-slate-300">Application Link (Optional)</label>
                         <Input
                             value={formData.link}
                             onChange={(e) => setFormData({ ...formData, link: e.target.value })}

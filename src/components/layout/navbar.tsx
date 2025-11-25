@@ -13,15 +13,15 @@ export function Navbar() {
         <motion.nav
             initial={{ y: -100 }}
             animate={{ y: 0 }}
-            className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/80 backdrop-blur-xl shadow-sm"
+            className="sticky top-0 z-50 w-full border-b border-white/10 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm"
         >
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-gradient-to-br from-babson-green-600 to-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-green-500/20">
                         B
                     </div>
-                    <span className="font-heading font-bold text-xl tracking-tight text-slate-900">
-                        Babson<span className="text-babson-green-700">Jobs</span>
+                    <span className="font-heading font-bold text-xl tracking-tight text-slate-900 dark:text-slate-100">
+                        Babson<span className="text-babson-green-700 dark:text-babson-green-400">Jobs</span>
                     </span>
                 </Link>
 
@@ -29,7 +29,7 @@ export function Navbar() {
                     {user ? (
                         <>
                             {role && (
-                                <div className="hidden md:flex items-center px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600 mr-2">
+                                <div className="hidden md:flex items-center px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 mr-2">
                                     {role.charAt(0).toUpperCase() + role.slice(1)}
                                 </div>
                             )}
@@ -58,14 +58,14 @@ export function Navbar() {
                                         </Button>
                                     </Link>
                                     <Link href="/alumni/jobs/new">
-                                        <Button variant="outline" size="sm" className="gap-2 border-babson-green-200 text-babson-green-700 hover:bg-babson-green-50">
+                                        <Button variant="outline" size="sm" className="gap-2 border-babson-green-200 dark:border-babson-green-800 text-babson-green-700 dark:text-babson-green-400 hover:bg-babson-green-50 dark:hover:bg-babson-green-950">
                                             <Briefcase className="w-4 h-4" />
                                             Post Job
                                         </Button>
                                     </Link>
                                 </>
                             )}
-                            <Button variant="ghost" size="sm" onClick={signOut} className="text-slate-500 hover:text-red-600">
+                            <Button variant="ghost" size="sm" onClick={signOut} className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400">
                                 <LogOut className="w-4 h-4" />
                             </Button>
                         </>

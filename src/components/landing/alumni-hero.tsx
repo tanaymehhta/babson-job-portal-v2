@@ -12,7 +12,7 @@ export function AlumniHero() {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-babson-green-50 text-babson-green-700 text-sm font-medium mb-4"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-babson-green-50 dark:bg-babson-green-900/30 text-babson-green-700 dark:text-babson-green-400 text-sm font-medium mb-4"
                 >
                     <Users className="w-4 h-4" />
                     For Babson Alumni
@@ -21,7 +21,7 @@ export function AlumniHero() {
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900"
+                    className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
                 >
                     Hire the next generation of <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-babson-green-700 to-teal-600">
@@ -33,7 +33,7 @@ export function AlumniHero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="text-xl text-slate-600 max-w-2xl mx-auto"
+                    className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto"
                 >
                     Post jobs, track applicants, and connect with top talent from the #1 school for entrepreneurship.
                 </motion.p>
@@ -51,7 +51,7 @@ export function AlumniHero() {
                         </Button>
                     </Link>
                     <Link href="/login?role=alumni">
-                        <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-xl border-slate-200 hover:bg-slate-50 text-slate-700">
+                        <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-xl border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300">
                             Alumni Login
                             <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, usePathname } from 'next/navigation';
@@ -28,7 +28,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<'student' | 'alumni' | 'admin' | null>(null);
     const router = useRouter();
     const pathname = usePathname();
-    const supabase = createClient();
+
+    // Memoize the supabase client to prevent re-creation on every render
+    const supabase = useMemo(() => createClient(), []);
 
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -58,10 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
     }, [supabase]);
 
-    const signOut = async () => {
+    // Memoize signOut function to maintain stable reference
+    const signOut = useCallback(async () => {
         await supabase.auth.signOut();
         router.push('/login');
-    };
+    }, [supabase, router]);
 
     return (
         <AuthContext.Provider value={{ user, session, loading, role, signOut }}>

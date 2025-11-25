@@ -53,12 +53,12 @@ export default function ProfilePage() {
         }
     };
 
-    if (loading) return <div className="p-8">Loading...</div>;
-    if (!profile) return <div className="p-8">Please log in</div>;
+    if (loading) return <div className="p-8 dark:text-slate-300">Loading...</div>;
+    if (!profile) return <div className="p-8 dark:text-slate-300">Please log in</div>;
 
     return (
         <div className="container mx-auto px-4 py-12 max-w-3xl">
-            <h1 className="font-heading text-3xl font-bold mb-8">Your Profile</h1>
+            <h1 className="font-heading text-3xl font-bold mb-8 dark:text-slate-100">Your Profile</h1>
 
             <form onSubmit={handleSave} className="space-y-6">
                 <Card>
@@ -71,21 +71,21 @@ export default function ProfilePage() {
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Full Name</label>
+                                <label className="text-sm font-medium dark:text-slate-200">Full Name</label>
                                 <Input
                                     value={profile.full_name || ''}
                                     onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Email</label>
-                                <Input value={profile.email || ''} disabled className="bg-slate-50" />
+                                <label className="text-sm font-medium dark:text-slate-200">Email</label>
+                                <Input value={profile.email || ''} disabled className="bg-slate-50 dark:bg-slate-800 dark:text-slate-400" />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Bio</label>
+                            <label className="text-sm font-medium dark:text-slate-200">Bio</label>
                             <textarea
-                                className="w-full min-h-[100px] rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                                className="w-full min-h-[100px] rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 px-3 py-2 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
                                 value={profile.bio || ''}
                                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                                 placeholder="Tell us about yourself..."
@@ -103,9 +103,9 @@ export default function ProfilePage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">LinkedIn URL</label>
+                            <label className="text-sm font-medium dark:text-slate-200">LinkedIn URL</label>
                             <div className="relative">
-                                <Linkedin className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                                <Linkedin className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-slate-500" />
                                 <Input
                                     className="pl-10"
                                     value={profile.linkedin_url || ''}
@@ -115,9 +115,9 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Resume Text (for AI matching)</label>
+                            <label className="text-sm font-medium dark:text-slate-200">Resume Text (for AI matching)</label>
                             <textarea
-                                className="w-full min-h-[200px] rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                                className="w-full min-h-[200px] rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 px-3 py-2 text-sm placeholder:text-slate-500 dark:placeholder:text-slate-400"
                                 value={profile.resume_text || ''}
                                 onChange={(e) => setProfile({ ...profile, resume_text: e.target.value })}
                                 placeholder="Paste your resume text here to improve job matching..."

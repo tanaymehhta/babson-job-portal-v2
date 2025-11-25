@@ -28,10 +28,10 @@ export default function HomePage() {
   // If authenticated alumni, we are redirecting (handled by useEffect), so show loading state
   if (user && role === 'alumni') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="h-12 w-12 bg-babson-green-200 rounded-full mb-4"></div>
-          <div className="h-4 w-32 bg-slate-200 rounded"></div>
+          <div className="h-12 w-12 bg-babson-green-200 dark:bg-babson-green-700 rounded-full mb-4"></div>
+          <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded"></div>
         </div>
       </div>
     );

@@ -55,7 +55,7 @@ export function LandingContainer() {
                 <Button
                     variant="outline"
                     onClick={toggleView}
-                    className="rounded-full bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:bg-white"
+                    className="rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-slate-200 dark:border-slate-700 shadow-sm hover:bg-white dark:hover:bg-slate-800"
                 >
                     {viewMode === 'student' ? (
                         <>

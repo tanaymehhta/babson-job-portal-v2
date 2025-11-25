@@ -52,7 +52,7 @@ function Sparkles(props: any) {
 
 export function AnimatedSparkle() {
     return (
-        <div className="absolute inset-0 -z-10 opacity-50">
+        <div className="fixed inset-0 -z-10 opacity-50">
             <Canvas camera={{ position: [0, 0, 5] }}>
                 <Sparkles />
             </Canvas>

@@ -65,8 +65,8 @@ export default function AlumniDashboard() {
         <div className="container mx-auto px-4 py-12 max-w-6xl">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="font-heading text-3xl font-bold text-slate-900">Alumni Dashboard</h1>
-                    <p className="text-slate-500">Manage your job postings and view applicants</p>
+                    <h1 className="font-heading text-3xl font-bold text-slate-900 dark:text-slate-100">Alumni Dashboard</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Manage your job postings and view applicants</p>
                 </div>
                 <Link href="/alumni/jobs/new">
                     <Button className="bg-babson-green-700 hover:bg-babson-green-800 text-white shadow-lg shadow-green-700/20">
@@ -117,13 +117,13 @@ export default function AlumniDashboard() {
                         <Card className="hover:shadow-md transition-shadow">
                             <CardContent className="p-6 flex flex-col md:flex-row justify-between items-center gap-4">
                                 <div>
-                                    <h3 className="font-bold text-lg text-slate-900">{job.title}</h3>
-                                    <div className="text-sm text-slate-500 flex gap-4 mt-1">
+                                    <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100">{job.title}</h3>
+                                    <div className="text-sm text-slate-500 dark:text-slate-400 flex gap-4 mt-1">
                                         <span>{job.company_name}</span>
                                         <span>•</span>
                                         <span>Posted {new Date(job.date_posted).toLocaleDateString()}</span>
                                         <span>•</span>
-                                        <span className={`capitalize ${job.status === 'active' ? 'text-emerald-600' : 'text-slate-500'}`}>
+                                        <span className={`capitalize ${job.status === 'active' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
                                             {job.status}
                                         </span>
                                     </div>
@@ -131,8 +131,8 @@ export default function AlumniDashboard() {
 
                                 <div className="flex items-center gap-4">
                                     <div className="text-center px-4">
-                                        <div className="text-2xl font-bold text-slate-900">{job.applications?.[0]?.count || 0}</div>
-                                        <div className="text-xs text-slate-500 uppercase tracking-wider">Applicants</div>
+                                        <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{job.applications?.[0]?.count || 0}</div>
+                                        <div className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">Applicants</div>
                                     </div>
                                     <Link href={`/alumni/jobs/${job.id}`}>
                                         <Button variant="outline" className="border-slate-200 hover:bg-slate-50">
@@ -145,8 +145,8 @@ export default function AlumniDashboard() {
                     </motion.div>
                 ))}
                 {jobs.length === 0 && (
-                    <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                        <p className="text-slate-500 mb-4">You haven't posted any jobs yet.</p>
+                    <div className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                        <p className="text-slate-500 dark:text-slate-400 mb-4">You haven't posted any jobs yet.</p>
                         <Link href="/alumni/jobs/new">
                             <Button variant="outline">Post your first job</Button>
                         </Link>

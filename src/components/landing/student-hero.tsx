@@ -17,7 +17,7 @@ export function StudentHero({ onSearch }: StudentHeroProps) {
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900"
+                    className="font-heading text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
                 >
                     Find your next <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-babson-green-600 to-emerald-500">
@@ -29,7 +29,7 @@ export function StudentHero({ onSearch }: StudentHeroProps) {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="text-xl text-slate-600 max-w-2xl mx-auto"
+                    className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto"
                 >
                     Use natural language to search for jobs, internships, and events tailored for Babson students.
                 </motion.p>
