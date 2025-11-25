@@ -27,6 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          id="keak-script"
+          src="https://zzontar2hsjaawcn.public.blob.vercel-storage.com/scripts/domain-575-httpsbabson-job-portal-v2.vercel.app.js"
+          type="text/javascript"
+          data-domain="575"
+        />
+      </head>
       <body
         className={`${inter.variable} ${outfit.variable} antialiased min-h-screen flex flex-col`}
       >

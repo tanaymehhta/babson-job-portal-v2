@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Memoize signOut function to maintain stable reference
     const signOut = useCallback(async () => {
         await supabase.auth.signOut();
-        router.push('/login');
+        router.push('/');
     }, [supabase, router]);
 
     return (
